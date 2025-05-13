@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="refresh" content="60"> <!-- Atualiza a cada 60 segundos -->
+  <title>Tabela ao Vivo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: transparent;
+      color: white;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: rgba(0, 0, 0, 0.6);
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid white;
+      text-align: center;
+    }
+    th {
+      background-color: #333;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Tabela de Dados ao Vivo</h2>
+<table id="dataTable">
+  <thead></thead>
+  <tbody></tbody>
+</table>
+
+<script>
+  const sheetID = "1VPqIYbv9-WMmV2WyJ8VOdXlWdIk-itOsEO7YS4_QLL8";
+  const sheetName = "Página1"; // Altere se sua aba tiver outro nome
+  const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json&sheet=${sheetName}`;
+
+  fetch(url)
+    .then(res => res.text())
+    .then(rep => {
+      const data = JSON.parse(rep.substr(47).slice(0, -2));
+      const cols = data.table.cols.map(col => col.label);
+      const rows = data.table.rows.map(row => row.c.map(cell => cell ? cell.v : ""));
+
+      const thead = document.querySelector("thead");
+      const tbody = document.querySelector("tbody");
+
+      thead.innerHTML = "<tr>" + cols.map(c => `<th>${c}</th>`).join("") + "</tr>";
+      tbody.innerHTML = rows.map(r => "<tr>" + r.map(d => `<td>${d}</td>`).join("") + "</tr>").join("");
+    });
+</script>
+
+</body>
+</html>
